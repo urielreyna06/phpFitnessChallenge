@@ -1,0 +1,93 @@
+-- Script generado el 2025-07-13 01:19:28
+-- Base de datos: desafios_fitness
+
+CREATE DATABASE IF NOT EXISTS desafios_fitness DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE desafios_fitness;
+
+-- Tabla: users
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    preferences TEXT,
+    last_login DATETIME,
+    nombre_completo VARCHAR(100),
+    email VARCHAR(100),
+    sexo ENUM('Masculino', 'Femenino', 'Otro'),
+    celular VARCHAR(20),
+    nacimiento DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla: challenges
+CREATE TABLE challenges (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    description TEXT,
+    duration INT,
+    objectives TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla: user_challenges
+CREATE TABLE user_challenges (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    challenge_id INT,
+    start_date DATE,
+    progreso INT,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (challenge_id) REFERENCES challenges(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla: progress
+CREATE TABLE progress (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_challenge_id INT,
+    date DATE,
+    detail TEXT,
+    progress TEXT,
+    FOREIGN KEY (user_challenge_id) REFERENCES user_challenges(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla: activities
+CREATE TABLE activities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    challenge_id INT,
+    type VARCHAR(100),
+    duration INT,
+    calories INT,
+    date DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (challenge_id) REFERENCES challenges(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Insert de prueba en users
+INSERT INTO users (username, password, nombre_completo, email, sexo, celular, nacimiento)
+VALUES 
+('usuario1', '123456', 'Uriel Reyna', 'uriel@example.com', 'Masculino', '60000001', '2000-01-01'),
+('usuario2', '123456', 'Laura Gómez', 'laura@example.com', 'Femenino', '60000002', '1995-06-15');
+
+-- Insert de prueba en challenges
+INSERT INTO challenges (title, description, duration, objectives) VALUES
+('Reto 5K', 'Corre 5 kilómetros en menos de 30 minutos durante 7 días.', 7, 'Mejorar resistencia cardiovascular, quemar grasa.'),
+('Desafío 100 Flexiones', 'Haz 100 flexiones al día durante 10 días.', 10, 'Tonificar pecho y brazos.'),
+('Cardio Intenso', '30 minutos de cardio HIIT cada día durante 14 días.', 14, 'Aumentar resistencia, quemar calorías.'),
+('Reto de Sentadillas', 'Haz 150 sentadillas diarias durante 7 días.', 7, 'Fortalecer piernas y glúteos.'),
+('Desafío de Abdominales', 'Haz una rutina completa de abdominales por 20 minutos diarios durante 15 días.', 15, 'Tonificar abdomen, mejorar postura.'),
+('Reto de Yoga', '30 minutos de yoga diario durante 21 días.', 21, 'Reducir estrés, aumentar flexibilidad.'),
+('Desafío Sin Azúcar', 'No consumir azúcares procesados durante 10 días.', 10, 'Mejorar salud metabólica.'),
+('Reto Bebida de Agua', 'Beber al menos 2 litros de agua cada día durante 7 días.', 7, 'Mejorar hidratación y salud renal.');
+
+-- Insert de prueba en user_challenges
+INSERT INTO user_challenges (user_id, challenge_id, start_date, progreso)
+VALUES 
+(1, 2, '2025-07-12', 25),
+(1, 4, '2025-07-12', 5);
+
+-- Insert de prueba en progress
+INSERT INTO progress (user_challenge_id, date, detail, progress)
+VALUES 
+(1, '2025-07-13', 'Flexiones matutinas completas.', '25%'),
+(2, '2025-07-13', 'Sentadillas lentas al final del día.', '5%');
